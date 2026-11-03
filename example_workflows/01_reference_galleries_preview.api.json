@@ -1,0 +1,71 @@
+{
+  "1": {
+    "class_type": "PoseGallery",
+    "inputs": {
+      "pose_id": "full_sexy_P031_front",
+      "language": "zh"
+    }
+  },
+  "2": {
+    "class_type": "PreviewImage",
+    "inputs": {
+      "images": [
+        "1",
+        0
+      ]
+    }
+  },
+  "3": {
+    "class_type": "RandomPoseGallery",
+    "inputs": {
+      "origin": "builtin",
+      "language": "zh",
+      "pose_system": "all",
+      "angle": "all"
+    }
+  },
+  "4": {
+    "class_type": "PreviewImage",
+    "inputs": {
+      "images": [
+        "3",
+        0
+      ]
+    }
+  },
+  "5": {
+    "class_type": "CostumeGallery",
+    "inputs": {
+      "costume_id": "real:SPR-0001",
+      "language": "zh"
+    }
+  },
+  "6": {
+    "class_type": "PreviewImage",
+    "inputs": {
+      "images": [
+        "5",
+        0
+      ]
+    }
+  },
+  "7": {
+    "class_type": "RandomCostumeGallery",
+    "inputs": {
+      "library": "anime",
+      "category": "spring",
+      "query": "",
+      "seed": 42,
+      "language": "zh"
+    }
+  },
+  "8": {
+    "class_type": "PreviewImage",
+    "inputs": {
+      "images": [
+        "7",
+        0
+      ]
+    }
+  }
+}

@@ -1,0 +1,121 @@
+{
+  "1": {
+    "class_type": "LoadImage",
+    "inputs": {
+      "image": "your_person.png"
+    }
+  },
+  "2": {
+    "class_type": "CostumeGallery",
+    "inputs": {
+      "costume_id": "real:SPR-0001",
+      "language": "zh"
+    }
+  },
+  "3": {
+    "class_type": "UNETLoader",
+    "inputs": {
+      "unet_name": "Qwen-Image-2.1\\qwen_image_2.1_int8_convrot.safetensors",
+      "weight_dtype": "default"
+    }
+  },
+  "4": {
+    "class_type": "QwenImage21Cache",
+    "inputs": {
+      "model": [
+        "3",
+        0
+      ],
+      "device": "auto",
+      "dtype": "default"
+    }
+  },
+  "5": {
+    "class_type": "CLIPLoader",
+    "inputs": {
+      "clip_name": "Qwen-Image-2.1\\qwen3vl_8b_int8_convrot.safetensors",
+      "type": "qwen_image",
+      "device": "default"
+    }
+  },
+  "6": {
+    "class_type": "VAELoader",
+    "inputs": {
+      "vae_name": "qwen\\qwen_image_2.1_vae_bf16.safetensors"
+    }
+  },
+  "7": {
+    "class_type": "TextEncodeQwenImage21",
+    "inputs": {
+      "clip": [
+        "5",
+        0
+      ],
+      "vae": [
+        "6",
+        0
+      ],
+      "prompt": "为 <image1> 中的成年人物更换服装，服装款式、颜色、面料和层次严格参考 <image2>。保留 <image1> 人物的五官、发型、表情、姿势、身体比例、背景和镜头构图。将服装自然穿在人物身上，呈现真实的衣料褶皱和光影；只保留人物原有的手和身体，不生成服装图中的空白背景。",
+      "negative_prompt": "",
+      "resolution": 1024,
+      "images.image_1": [
+        "1",
+        0
+      ],
+      "images.image_2": [
+        "2",
+        0
+      ]
+    }
+  },
+  "8": {
+    "class_type": "KSampler",
+    "inputs": {
+      "model": [
+        "4",
+        0
+      ],
+      "positive": [
+        "7",
+        0
+      ],
+      "negative": [
+        "7",
+        1
+      ],
+      "latent_image": [
+        "7",
+        2
+      ],
+      "seed": 2026110301,
+      "steps": 25,
+      "cfg": 1.0,
+      "sampler_name": "euler",
+      "scheduler": "simple",
+      "denoise": 1.0
+    }
+  },
+  "9": {
+    "class_type": "VAEDecode",
+    "inputs": {
+      "samples": [
+        "8",
+        0
+      ],
+      "vae": [
+        "6",
+        0
+      ]
+    }
+  },
+  "10": {
+    "class_type": "SaveImage",
+    "inputs": {
+      "images": [
+        "9",
+        0
+      ],
+      "filename_prefix": "costume_gallery/qwen_image_2_1"
+    }
+  }
+}

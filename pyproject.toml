@@ -1,0 +1,14 @@
+[project]
+name = "comfyui-reference-gallery"
+version = "0.1.0"
+description = "Local pose and costume reference galleries for ComfyUI"
+requires-python = ">=3.10"
+dependencies = ["Pillow", "numpy", "torch", "aiohttp"]
+license = {text = "MIT for code; upstream gallery artwork and data have separate terms"}
+
+[project.urls]
+Repository = "https://github.com/wuzhenyuu/comfyui-reference-gallery"
+Issues = "https://github.com/wuzhenyuu/comfyui-reference-gallery/issues"
+
+[tool.comfy]
+DisplayName = "Reference Gallery 姿势与服装图库"

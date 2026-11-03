@@ -1,0 +1,154 @@
+{
+  "RandomPoseGallery": {
+    "display_name": "Random Pose Gallery",
+    "description": "Draw a reference on every execution; the original selector is unchanged.",
+    "inputs": {
+      "origin": {
+        "name": "Random source",
+        "tooltip": "all: all references; builtin: bundled; user: custom uploads."
+      },
+      "language": {
+        "name": "UI / output language",
+        "tooltip": "Controls the UI, description, and action output language. Saved with the workflow."
+      },
+      "pose_system": {
+        "name": "Pose system"
+      },
+      "angle": {
+        "name": "Pose view"
+      }
+    },
+    "outputs": {
+      "0": {
+        "name": "Image"
+      },
+      "1": {
+        "name": "Width"
+      },
+      "2": {
+        "name": "Height"
+      },
+      "3": {
+        "name": "Pose ID"
+      },
+      "4": {
+        "name": "Description"
+      },
+      "5": {
+        "name": "Action"
+      }
+    }
+  },
+  "PoseGallery": {
+    "display_name": "Pose Gallery",
+    "description": "Browse local multi-view pose references, filter by category, or upload a custom image.",
+    "inputs": {
+      "pose_id": {
+        "name": "Pose ID",
+        "tooltip": "Browse the pose gallery, choose a view, then click Use pose. You can also enter an ID directly."
+      },
+      "language": {
+        "name": "UI / output language",
+        "tooltip": "Controls the UI, description, and action output language. Saved with the workflow."
+      }
+    },
+    "outputs": {
+      "0": {
+        "name": "Image"
+      },
+      "1": {
+        "name": "Width"
+      },
+      "2": {
+        "name": "Height"
+      },
+      "3": {
+        "name": "Pose ID"
+      },
+      "4": {
+        "name": "Description"
+      },
+      "5": {
+        "name": "Action"
+      }
+    }
+  },
+  "CostumeGallery": {
+    "display_name": "Costume Gallery",
+    "description": "Browse local realistic and anime costume references and output the selected IMAGE for a local image workflow.",
+    "inputs": {
+      "costume_id": {
+        "name": "Costume ID",
+        "tooltip": "For example real:SPR-0001 or anime:SPR-0001. You can also select a costume using the gallery."
+      },
+      "language": {
+        "name": "UI / output language",
+        "tooltip": "Controls the interface, description and keyword language. Saved with the workflow."
+      }
+    },
+    "outputs": {
+      "0": {
+        "name": "Image"
+      },
+      "1": {
+        "name": "Width"
+      },
+      "2": {
+        "name": "Height"
+      },
+      "3": {
+        "name": "Costume ID"
+      },
+      "4": {
+        "name": "Description"
+      },
+      "5": {
+        "name": "Keywords"
+      }
+    }
+  },
+  "RandomCostumeGallery": {
+    "display_name": "Random Costume Gallery",
+    "description": "Filter local costume references by library, category and Chinese or English keywords, then select one using a seed.",
+    "inputs": {
+      "library": {
+        "name": "Library",
+        "tooltip": "all: all costumes; real: realistic; anime: anime."
+      },
+      "category": {
+        "name": "Category"
+      },
+      "query": {
+        "name": "Keywords",
+        "tooltip": "Separate keywords with spaces. All keywords must match."
+      },
+      "seed": {
+        "name": "Seed"
+      },
+      "language": {
+        "name": "UI / output language",
+        "tooltip": "Controls the interface, description and keyword language. Saved with the workflow."
+      }
+    },
+    "outputs": {
+      "0": {
+        "name": "Image"
+      },
+      "1": {
+        "name": "Width"
+      },
+      "2": {
+        "name": "Height"
+      },
+      "3": {
+        "name": "Costume ID"
+      },
+      "4": {
+        "name": "Description"
+      },
+      "5": {
+        "name": "Keywords"
+      }
+    }
+  }
+}

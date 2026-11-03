@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>服装参考图库</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 40 40%27%3E%3Crect width=%2740%27 height=%2740%27 rx=%278%27 fill=%27%23136d78%27/%3E%3Cpath d=%27M15 10h10l3 7-4 2 5 12H11l5-12-4-2z%27 fill=%27white%27/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="./ui/gallery.css">
+  <script type="module" src="./ui/gallery.mjs"></script>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand"><span class="brand-icon" aria-hidden="true">♧</span><h1 id="title">服装参考图库</h1><span id="local-label" class="local-label">本地图库</span></div>
+    <label class="language-label"><span id="language-label">语言</span><select id="language" aria-label="语言"><option value="zh">中文</option><option value="en">English</option></select></label>
+  </header>
+  <main class="workspace">
+    <aside class="sidebar" aria-labelledby="category-title">
+      <h2 id="category-title">服装分类</h2>
+      <nav id="categories" aria-label="服装分类"></nav>
+      <p id="sidebar-note" class="sidebar-note">选择服装查看大图，再点击「使用此服装」。</p>
+      <p id="source-label" class="source-label">nvzhuang 本地素材</p>
+    </aside>
+    <section class="collection" aria-labelledby="results-title">
+      <div class="filterbar">
+        <div id="libraries" class="segmented" role="group" aria-label="图库类型">
+          <button type="button" data-library="all" aria-pressed="true">全部</button>
+          <button type="button" data-library="real" aria-pressed="false">写实</button>
+          <button type="button" data-library="anime" aria-pressed="false">动漫</button>
+        </div>
+        <form id="search-form" role="search" class="search-form">
+          <label class="sr-only" for="search" id="search-label">搜索服装</label>
+          <input id="search" type="search" autocomplete="off" placeholder="搜索编号、服装、颜色…（支持中英文）">
+          <button type="submit" id="search-button">搜索</button>
+        </form>
+      </div>
+      <div class="resultsbar"><h2 id="results-title">全部服装</h2><p id="result-count" role="status" aria-live="polite">正在加载…</p><button type="button" class="text-button" id="reset">重置筛选</button></div>
+      <div id="status" class="status-panel" role="status" aria-live="polite"><p id="status-text">正在读取本地图库…</p><button type="button" id="retry" hidden>重试</button></div>
+      <div id="grid" class="gallery-grid"></div>
+      <div class="load-more"><button type="button" id="more" hidden>加载更多</button><span id="page-count"></span></div>
+    </section>
+  </main>
+  <dialog id="detail" class="detail-dialog" aria-labelledby="detail-title">
+    <div class="detail-heading"><h2 id="detail-title">服装预览</h2><button type="button" id="close-detail" aria-label="关闭预览">×</button></div>
+    <div class="detail-body">
+      <div class="image-stage"><img id="detail-image" alt=""><p id="image-error" role="status" hidden></p><button type="button" id="previous" class="image-nav previous" aria-label="上一件">‹</button><button type="button" id="next" class="image-nav next" aria-label="下一件">›</button></div>
+      <div class="detail-info"><span id="detail-library" class="library-badge"></span><p id="detail-id" class="costume-id"></p><p id="dimensions" class="dimensions" role="status"></p><h3 id="keywords-title">服装关键词</h3><p id="detail-keywords" class="detail-keywords"></p><p id="detail-hint" class="detail-hint"></p><div class="detail-actions"><button type="button" id="use" class="primary">使用此服装</button><button type="button" id="copy">复制服装编号</button><a id="download" class="button" download>下载原图 WebP</a></div><p id="action-status" class="action-status" role="status" aria-live="polite"></p><span id="position" class="position"></span></div>
+    </div>
+  </dialog>
+</body>
+</html>
