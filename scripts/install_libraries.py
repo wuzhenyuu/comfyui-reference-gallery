@@ -57,7 +57,7 @@ def atomic_write(path: Path, content: bytes) -> None:
             os.unlink(temporary_name)
 
 
-def download(urls: tuple[str, ...], destination: Path) -> None:
+def download(urls: tuple[str, ...], destination: Path, max_archive_bytes: int = MAX_ARCHIVE_BYTES) -> None:
     errors = []
     for url in urls:
         try:
@@ -67,7 +67,7 @@ def download(urls: tuple[str, ...], destination: Path) -> None:
             with urllib.request.urlopen(request, timeout=90) as response, destination.open("wb") as output:
                 while chunk := response.read(1024 * 1024):
                     total += len(chunk)
-                    if total > MAX_ARCHIVE_BYTES:
+                    if total > max_archive_bytes:
                         raise ValueError("Archive exceeds size limit")
                     output.write(chunk)
             if not zipfile.is_zipfile(destination):
@@ -122,7 +122,8 @@ class ZipSource:
 
 
 @contextmanager
-def open_input(source: Path | None, archive: Path | None, urls: tuple[str, ...], prefix: str):
+def open_input(source: Path | None, archive: Path | None, urls: tuple[str, ...], prefix: str,
+               max_archive_bytes: int = MAX_ARCHIVE_BYTES):
     if source is not None:
         yield DirectorySource(source)
     elif archive is not None:
@@ -131,7 +132,7 @@ def open_input(source: Path | None, archive: Path | None, urls: tuple[str, ...],
     else:
         with tempfile.TemporaryDirectory(prefix="reference-gallery-download-") as temporary:
             path = Path(temporary) / "upstream.zip"
-            download(urls, path)
+            download(urls, path, max_archive_bytes=max_archive_bytes)
             with zipfile.ZipFile(path) as zipped:
                 yield ZipSource(zipped, prefix)
 
@@ -204,27 +205,43 @@ def validate_jpeg(content: bytes) -> tuple[int, int]:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--library", choices=("all", "pose", "costume"), default="all")
+    parser.add_argument("--library", choices=("all", "pose", "costume", "hairstyle"), default="all")
     parser.add_argument("--source", type=Path, help="Offline source for a single selected library")
     parser.add_argument("--pose-source", type=Path, help="Offline pose clone or installed library")
     parser.add_argument("--costume-source", type=Path, help="Offline costume clone or installed library")
+    parser.add_argument("--hairstyle-source", type=Path, help="Offline pinned hairstyle clone or installed library")
+    parser.add_argument("--hairstyle-archive", type=Path, help="Offline fixed-revision hairstyle ZIP")
+    parser.add_argument("--hairstyle-destination", type=Path, help="Override the hairstyle library target")
     parser.add_argument("--destination", type=Path, help="Selected library target; for all, the bundle root")
     arguments = parser.parse_args()
     if arguments.source and arguments.library == "all":
-        parser.error("For all, use --pose-source and --costume-source")
-    selected = ("pose", "costume") if arguments.library == "all" else (arguments.library,)
+        parser.error("For all, use --pose-source, --costume-source and --hairstyle-source")
+    hairstyle_source = arguments.source if arguments.library == "hairstyle" else arguments.hairstyle_source
+    if (hairstyle_source or arguments.hairstyle_source) and arguments.hairstyle_archive:
+        parser.error("Use either a hairstyle source directory or archive")
+    if arguments.library not in ("all", "hairstyle") and any((arguments.hairstyle_source,
+            arguments.hairstyle_archive, arguments.hairstyle_destination)):
+        parser.error("Hairstyle options require --library hairstyle or all")
+    selected = ("pose", "costume", "hairstyle") if arguments.library == "all" else (arguments.library,)
     reports = {}
     for kind in selected:
         if kind == "pose":
             from install_pose_library import run
             source = arguments.pose_source
-        else:
+        elif kind == "costume":
             from install_costume_library import run
             source = arguments.costume_source
+        else:
+            from install_hairstyle_library import run
+            source = arguments.hairstyle_source
         destination = arguments.destination
         if destination and arguments.library == "all":
             destination = destination / kind / "library"
-        reports[kind] = run(source=arguments.source or source, destination=destination)
+        options = {"source": arguments.source or source, "destination": destination}
+        if kind == "hairstyle":
+            options["destination"] = arguments.hairstyle_destination or destination
+            options["archive"] = arguments.hairstyle_archive
+        reports[kind] = run(**options)
     print(json.dumps(reports, ensure_ascii=False, indent=2))
 
 

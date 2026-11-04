@@ -150,5 +150,93 @@
         "name": "Keywords"
       }
     }
+  },
+  "HairstyleGallery": {
+    "display_name": "Hairstyle Gallery",
+    "description": "Browse built-in hairstyles or import one custom reference image, with bilingual names and PNG output.",
+    "inputs": {
+      "hairstyle_id": {
+        "name": "Hairstyle ID",
+        "tooltip": "Select a mannequin hairstyle from the gallery. Selection does not run the workflow."
+      },
+      "language": {
+        "name": "UI / text language",
+        "tooltip": "zh: Chinese; en: English. Changes the interface, name, description, and hair-length text."
+      }
+    },
+    "outputs": {
+      "0": {
+        "name": "Image"
+      },
+      "1": {
+        "name": "Width"
+      },
+      "2": {
+        "name": "Height"
+      },
+      "3": {
+        "name": "Hairstyle ID"
+      },
+      "4": {
+        "name": "Name"
+      },
+      "5": {
+        "name": "Description"
+      },
+      "6": {
+        "name": "Hair length"
+      },
+      "7": {
+        "name": "Source ID"
+      }
+    }
+  },
+  "RandomHairstyleGallery": {
+    "display_name": "Random Hairstyle Gallery",
+    "description": "Click the dice to preview a random hairstyle. Lock the selection to keep it for workflow runs.",
+    "inputs": {
+      "origin": {
+        "name": "Random source",
+        "tooltip": "all: all references; builtin: bundled; user: custom uploads."
+      },
+      "language": {
+        "name": "UI / text language",
+        "tooltip": "zh: Chinese; en: English. Changes the interface, name, description, and hair-length text."
+      },
+      "hairstyle_id": {
+        "name": "Current hairstyle ID",
+        "tooltip": "The selected reference. Workflow runs keep this image while locked."
+      },
+      "locked": {
+        "name": "Lock random selection",
+        "tooltip": "Keep the current selection and disable the dice."
+      }
+    },
+    "outputs": {
+      "0": {
+        "name": "Image"
+      },
+      "1": {
+        "name": "Width"
+      },
+      "2": {
+        "name": "Height"
+      },
+      "3": {
+        "name": "Hairstyle ID"
+      },
+      "4": {
+        "name": "Name"
+      },
+      "5": {
+        "name": "Description"
+      },
+      "6": {
+        "name": "Hair length"
+      },
+      "7": {
+        "name": "Source ID"
+      }
+    }
   }
 }

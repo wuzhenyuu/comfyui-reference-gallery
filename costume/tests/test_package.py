@@ -34,13 +34,17 @@ class PackageTests(unittest.TestCase):
         with patch.dict(sys.modules, {"server": server}):
             spec.loader.exec_module(cls.module)
 
-    def test_all_four_existing_ids_and_outputs_survive_root_aggregation(self):
+    def test_all_six_ids_and_existing_outputs_survive_root_aggregation(self):
         nodes = self.module.NODE_CLASS_MAPPINGS
-        self.assertEqual(set(nodes), {"PoseGallery", "RandomPoseGallery", "CostumeGallery", "RandomCostumeGallery"})
+        self.assertEqual(set(nodes), {"PoseGallery", "RandomPoseGallery", "CostumeGallery", "RandomCostumeGallery",
+                                      "HairstyleGallery", "RandomHairstyleGallery"})
         self.assertEqual(set(nodes), set(self.module.NODE_DISPLAY_NAME_MAPPINGS))
         self.assertEqual(self.module.WEB_DIRECTORY, "./web")
         for name, node in nodes.items():
-            self.assertEqual(tuple(node.RETURN_TYPES), ("IMAGE", "INT", "INT", "STRING", "STRING", "STRING"), name)
+            expected = ("IMAGE", "INT", "INT", "STRING", "STRING", "STRING")
+            if "Hairstyle" in name:
+                expected += ("STRING", "STRING")
+            self.assertEqual(tuple(node.RETURN_TYPES), expected, name)
         self.assertEqual(nodes["PoseGallery"].RETURN_NAMES, ("image", "width", "height", "pose_id", "description", "action"))
         self.assertEqual(tuple(nodes["CostumeGallery"].RETURN_NAMES), ("image", "width", "height", "costume_id", "description", "keywords"))
         self.assertEqual(nodes["PoseGallery"].FUNCTION, "load_pose")
@@ -50,6 +54,10 @@ class PackageTests(unittest.TestCase):
         self.assertEqual(nodes["CostumeGallery"].INPUT_TYPES()["required"]["costume_id"][1]["default"], "real:SPR-0001")
         self.assertTrue(nodes["RandomCostumeGallery"].HAS_INTERMEDIATE_OUTPUT)
         self.assertFalse(nodes["CostumeGallery"].HAS_INTERMEDIATE_OUTPUT)
+        self.assertEqual(nodes["HairstyleGallery"].RETURN_NAMES,
+                         ("image", "width", "height", "hairstyle_id", "name", "description", "hair_length", "source_id"))
+        self.assertEqual(nodes["HairstyleGallery"].FUNCTION, "load_hairstyle")
+        self.assertEqual(nodes["RandomHairstyleGallery"].FUNCTION, "load_random")
 
     def test_unchanged_routes_register_once_and_share_web_root(self):
         routes = [(route.method, route.path) for route in self.routes]
@@ -57,10 +65,14 @@ class PackageTests(unittest.TestCase):
         for route in (("GET", "/pose_gallery/gallery"), ("GET", "/pose_gallery/catalog"),
                       ("POST", "/pose_gallery/upload"), ("POST", "/pose_gallery/manage/apply"),
                       ("GET", "/pose_gallery/ui/{filename}"), ("GET", "/costume_gallery/gallery"),
-                      ("GET", "/costume_gallery/catalog"), ("GET", "/costume_gallery/assets/{kind}/{costume_id}")):
+                      ("GET", "/costume_gallery/catalog"), ("GET", "/costume_gallery/assets/{kind}/{costume_id}"),
+                      ("GET", "/hairstyle_gallery/gallery"), ("GET", "/hairstyle_gallery/catalog"),
+                      ("GET", "/hairstyle_gallery/random"), ("POST", "/hairstyle_gallery/upload"),
+                      ("GET", "/hairstyle_gallery/ui/{filename}")):
             self.assertIn(route, routes)
         self.assertEqual(self.module.pose.WEB_ROOT, ROOT / "web")
         self.assertEqual(self.module.costume.catalog.WEB_ROOT, ROOT / "web")
+        self.assertEqual(self.module.hairstyle.WEB_ROOT, ROOT / "web" / "hairstyle")
 
     def test_existing_user_directory_and_environment_overrides_remain_compatible(self):
         import folder_paths
@@ -71,16 +83,21 @@ class PackageTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             env = {"COMFYUI_POSE_GALLERY_LIBRARY": str(Path(directory) / "pose"),
                    "COMFYUI_POSE_GALLERY_USER_LIBRARY": str(Path(directory) / "existing-user"),
-                   "COMFYUI_COSTUME_GALLERY_LIBRARY": str(Path(directory) / "costume")}
+                   "COMFYUI_COSTUME_GALLERY_LIBRARY": str(Path(directory) / "costume"),
+                   "COMFYUI_HAIRSTYLE_GALLERY_LIBRARY": str(Path(directory) / "hairstyle"),
+                   "COMFYUI_HAIRSTYLE_GALLERY_USER_LIBRARY": str(Path(directory) / "existing-hairstyle-user")}
             with patch.dict(os.environ, env):
                 for package, variable in (("pose", "COMFYUI_POSE_GALLERY_LIBRARY"),
-                                          ("costume", "COMFYUI_COSTUME_GALLERY_LIBRARY")):
+                                          ("costume", "COMFYUI_COSTUME_GALLERY_LIBRARY"),
+                                          ("hairstyle", "COMFYUI_HAIRSTYLE_GALLERY_LIBRARY")):
                     spec = importlib.util.spec_from_file_location("reference_env_" + package, ROOT / package / "catalog.py")
                     module = importlib.util.module_from_spec(spec)
                     spec.loader.exec_module(module)
                     self.assertEqual(module.LIBRARY, Path(env[variable]).resolve())
                     if package == "pose":
                         self.assertEqual(module.USER_LIBRARY, Path(env["COMFYUI_POSE_GALLERY_USER_LIBRARY"]).resolve())
+                    if package == "hairstyle":
+                        self.assertEqual(module.USER_LIBRARY, Path(env["COMFYUI_HAIRSTYLE_GALLERY_USER_LIBRARY"]).resolve())
 
     def test_original_http_urls_serve_the_shared_web_files(self):
         async def scenario():
@@ -92,7 +109,10 @@ class PackageTests(unittest.TestCase):
                                       ("/pose_gallery/ui/i18n.mjs", "i18n.mjs"),
                                       ("/pose_gallery/ui/custom_upload.mjs", "custom_upload.mjs"),
                                       ("/costume_gallery/ui/gallery.mjs", "gallery.mjs"),
-                                      ("/costume_gallery/ui/gallery.css", "gallery.css")):
+                                      ("/costume_gallery/ui/gallery.css", "gallery.css"),
+                                      ("/hairstyle_gallery/gallery", "hairstyle/gallery.html"),
+                                      ("/hairstyle_gallery/ui/app.mjs", "hairstyle/app.mjs"),
+                                      ("/hairstyle_gallery/ui/i18n.mjs", "hairstyle/i18n.mjs")):
                     with self.subTest(url=url):
                         response = await client.get(url)
                         self.assertEqual(response.status, 200)

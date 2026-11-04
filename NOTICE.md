@@ -48,3 +48,24 @@ Fixed source documents:
 
 Neither upstream's external AI generation/try-on service, analytics nor Go
 backend is included or executed by the library installers.
+
+## Hairstyle
+
+Code and UI source: https://github.com/wangweihong/comfyui-hairstyle-gallery/tree/f72dc1881f92a40e52bd0fbf53d33c24d35c4c5b.
+This integration includes the native-button fixes for the ComfyUI Vue node
+renderer and keeps the original node IDs, HTTP routes and user library paths.
+
+The optional library is pinned to that revision: 893 PNG originals, 893 WebP
+previews and 893 WebP thumbnails. It is installed explicitly, not distributed
+in this repository. Original gallery indexes and generation records are also
+excluded. The small English-name dictionary needed by the runtime is retained
+with its upstream provenance; the independent-code MIT grant does not extend
+to original or translated metadata.
+
+The full upstream license and third-party statement are preserved in
+`sources/hairstyle/`. Upstream credits あぎ (@agi_aibusi) and
+https://ai-portrait-gallery.pages.dev/ as the original portrait source, and
+describes the hairstyle library as generated mannequin references derived from
+893 front-facing portraits. The statement records the source site's CC0 label
+and its request to avoid direct redistribution of the image dataset. Models
+and LoRAs are not included, and their terms are not changed by this plugin.

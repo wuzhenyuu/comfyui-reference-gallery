@@ -18,3 +18,4 @@ __pycache__/
 **/cache_replay_result.json
 PROJECT_STATE.md
 .local/
+.playwright-cli/

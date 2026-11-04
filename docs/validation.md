@@ -1,5 +1,53 @@
 # Validation
 
+## 2026-11-04: hairstyle integration (v0.2.0)
+
+The following checks apply to the six-node merged package at this release,
+using ComfyUI 0.43.0 and frontend 1.57.6. The test server enabled only
+`comfyui-reference-gallery`; all six node definitions reported that package
+as their owner. The main ComfyUI installation continued using the three
+independent packages and was not switched to the merged package.
+
+- The new six-node preview API workflow completed with six decoded preview
+  images. The unchanged four-node preview API workflow also completed.
+- The six-node UI workflow imported and exported all six reference connections
+  through IMAGE output 0 without missing gallery nodes.
+- Real Vue-renderer clicks opened the nested hairstyle UI, searched and selected
+  a different hairstyle, and updated only that node. The random dice, selection
+  lock and language switch worked without queueing a prompt. Selection,
+  language and lock state survived workflow serialization and reload.
+- The existing pose/costume browser smoke script passed: actual native-button
+  clicks, selections, independent IDs, save/reopen and no automatic queue.
+  Its representative random UI-message restoration check is separate from the
+  actual six-node reference-image execution above.
+- Python: pose 46 checks (44 passed, 2 optional library checks skipped),
+  costume/package 15 checks (14 passed, 1 optional live-cache check skipped),
+  hairstyle 36 checks (34 passed, 2 optional full-library translation checks
+  skipped). Hairstyle translation checks then passed 3/3 with the installed
+  library explicitly supplied. Windows tests used UTF-8 and a resolved long
+  temporary-directory path.
+- JavaScript: 48 checks, 44 passed and 4 optional browser/full-library checks
+  skipped. New hairstyle script syntax checks passed. The real browser checks
+  described above were run separately through Playwright CLI.
+- Installer regressions: 25/25 passed, including the 14 existing pose/costume
+  checks and 11 new hairstyle cases. Coverage includes pinned clone/ZIP,
+  corrupt hashes, altered previews, missing files, duplicate IDs, path and user
+  library containment, index-last publication and Windows CRLF text checkout.
+- The unified CLI installed the complete hairstyle library offline from the
+  pinned local source into an ignored test destination: 893 records, 2,679
+  images and 2,011,434,211 image bytes. All three fixed Git image-tree hashes
+  matched. A subsequent check of all 2,682 installed content SHA256 entries
+  found no missing or changed files. This check verified file hashes,
+  PNG chunk CRCs and PNG/WebP structure and dimensions, without full pixel
+  decoding by the installer or assessing image-generation quality.
+
+No Qwen or H3 model inference was run for this release. Full network archive
+download was not repeated; the complete offline installation used the same
+pinned source content. The original four-node release checks below are
+historical results from 2026-11-03.
+
+## 2026-11-03: original pose/costume integration
+
 Validated on 2026-11-03 against ComfyUI 0.43.0 and frontend 1.57.6.
 These results apply to the merged plugin, rather than only to the two original
 packages. The live checks used an isolated ComfyUI instance with only this
@@ -73,7 +121,8 @@ Use a ComfyUI Python environment for the backend suites:
 ```bash
 python -m unittest discover -s pose/tests -p 'test_*.py' -q
 python -m unittest discover -s costume/tests -p 'test_*.py' -q
-python -m unittest discover -s tests -p 'test_installers.py' -q
+python -m unittest discover -s hairstyle/tests -p 'test_*.py' -q
+python -m unittest discover -s tests -p 'test_*installer*.py' -q
 node --test pose/tests/test_preview.mjs
 ```
 
