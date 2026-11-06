@@ -9,11 +9,17 @@ import os
 from pathlib import Path, PurePosixPath
 import struct
 import subprocess
+import sys
 import tempfile
 import urllib.error
 import urllib.request
 import zipfile
 import zlib
+
+# Embedded Python may omit this directory from its isolated search path.
+_SCRIPT_DIR = str(Path(__file__).resolve().parent)
+if _SCRIPT_DIR not in sys.path:
+    sys.path.insert(0, _SCRIPT_DIR)
 
 ROOT = Path(__file__).resolve().parents[1]
 MAX_ARCHIVE_BYTES = 1200 * 1024 * 1024

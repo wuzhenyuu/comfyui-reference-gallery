@@ -43,6 +43,14 @@ Windows venv 示例：
 .\venv\Scripts\python.exe .\custom_nodes\comfyui-reference-gallery\scripts\install_libraries.py --library all
 ```
 
+Windows 便携版示例（在便携包内的 `ComfyUI` 目录执行）：
+
+```powershell
+..\python_embeded\python.exe .\custom_nodes\comfyui-reference-gallery\scripts\install_libraries.py --library all
+```
+
+使用便携包附带的 Python 即可，无需修改 `python*._pth`。安装器会自行定位同目录的安装脚本。
+
 `--library all` 安装三套素材。也可以用 `--library pose`、`--library costume` 或 `--library hairstyle` 只安装一套。安装器固定上游版本，只有显式运行安装器时才访问网络；日常使用无需连接原站。完成后重启 ComfyUI。
 
 ## 从独立插件迁移
