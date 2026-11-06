@@ -8,7 +8,13 @@ import json
 import os
 from pathlib import Path
 import re
+import sys
 import tempfile
+
+# Embedded Python may omit this directory from its isolated search path.
+_SCRIPT_DIR = str(Path(__file__).resolve().parent)
+if _SCRIPT_DIR not in sys.path:
+    sys.path.insert(0, _SCRIPT_DIR)
 
 from install_libraries import (ROOT, DirectorySource, atomic_write, check_destination,
                                open_input, publish, safe_path, validate_jpeg, validate_png)
